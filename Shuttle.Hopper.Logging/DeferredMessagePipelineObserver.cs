@@ -6,41 +6,41 @@ namespace Shuttle.Hopper.Logging;
 
 public class DeferredMessagePipelineObserver(ILogger<DeferredMessagePipelineLogger> logger, IServiceBusLoggingConfiguration serviceBusLoggingConfiguration)
     : PipelineObserver<DeferredMessagePipelineLogger>(logger, serviceBusLoggingConfiguration),
-        IPipelineObserver<OnGetMessage>,
-        IPipelineObserver<OnAfterGetMessage>,
-        IPipelineObserver<OnDeserializeTransportMessage>,
-        IPipelineObserver<OnAfterDeserializeTransportMessage>,
-        IPipelineObserver<OnProcessDeferredMessage>,
-        IPipelineObserver<OnAfterProcessDeferredMessage>
+        IPipelineObserver<ReceiveMessage>,
+        IPipelineObserver<MessageReceived>,
+        IPipelineObserver<DeserializeTransportMessage>,
+        IPipelineObserver<TransportMessageDeserialized>,
+        IPipelineObserver<ProcessDeferredMessage>,
+        IPipelineObserver<DeferredMessageProcessed>
 {
-    public async Task ExecuteAsync(IPipelineContext<OnAfterDeserializeTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<TransportMessageDeserialized> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterGetMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<MessageReceived> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnDeserializeTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<DeserializeTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnGetMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<ReceiveMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         Guard.AgainstNull(pipelineContext);
 
         await TraceAsync(pipelineContext, $"working = {pipelineContext.Pipeline.State.GetWorking()} / has message = {pipelineContext.Pipeline.State.GetReceivedMessage() != null}");
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnProcessDeferredMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<ProcessDeferredMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterProcessDeferredMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<DeferredMessageProcessed> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }

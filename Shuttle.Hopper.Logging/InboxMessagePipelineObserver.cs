@@ -6,89 +6,89 @@ namespace Shuttle.Hopper.Logging;
 
 public class InboxMessagePipelineObserver(ILogger<InboxMessagePipelineLogger> logger, IServiceBusLoggingConfiguration serviceBusLoggingConfiguration)
     : PipelineObserver<InboxMessagePipelineLogger>(logger, serviceBusLoggingConfiguration),
-        IPipelineObserver<OnGetMessage>,
-        IPipelineObserver<OnAfterGetMessage>,
-        IPipelineObserver<OnDeserializeTransportMessage>,
-        IPipelineObserver<OnAfterDeserializeTransportMessage>,
-        IPipelineObserver<OnDecompressMessage>,
-        IPipelineObserver<OnAfterDecompressMessage>,
-        IPipelineObserver<OnDecryptMessage>,
-        IPipelineObserver<OnAfterDecryptMessage>,
-        IPipelineObserver<OnDeserializeMessage>,
-        IPipelineObserver<OnAfterDeserializeMessage>,
-        IPipelineObserver<OnHandleMessage>,
-        IPipelineObserver<OnAfterHandleMessage>,
-        IPipelineObserver<OnAcknowledgeMessage>,
-        IPipelineObserver<OnAfterAcknowledgeMessage>
+        IPipelineObserver<ReceiveMessage>,
+        IPipelineObserver<MessageReceived>,
+        IPipelineObserver<DeserializeTransportMessage>,
+        IPipelineObserver<TransportMessageDeserialized>,
+        IPipelineObserver<DecompressMessage>,
+        IPipelineObserver<MessageDecompressed>,
+        IPipelineObserver<DecryptMessage>,
+        IPipelineObserver<MessageDecrypted>,
+        IPipelineObserver<DeserializeMessage>,
+        IPipelineObserver<MessageDeserialized>,
+        IPipelineObserver<HandleMessage>,
+        IPipelineObserver<MessageHandled>,
+        IPipelineObserver<AcknowledgeMessage>,
+        IPipelineObserver<MessageAcknowledged>
 {
-    public async Task ExecuteAsync(IPipelineContext<OnAcknowledgeMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<AcknowledgeMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterAcknowledgeMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<MessageAcknowledged> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterDecompressMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<MessageDecompressed> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterDecryptMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<MessageDecrypted> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterDeserializeMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<MessageDeserialized> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterDeserializeTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<TransportMessageDeserialized> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterGetMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<MessageReceived> pipelineContext, CancellationToken cancellationToken = default)
     {
         Guard.AgainstNull(pipelineContext);
 
         await TraceAsync(pipelineContext, $"working = {pipelineContext.Pipeline.State.GetWorking()} / has message = {pipelineContext.Pipeline.State.GetReceivedMessage() != null}");
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterHandleMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<MessageHandled> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnDecompressMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<DecompressMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnDecryptMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<DecryptMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnDeserializeMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<DeserializeMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnDeserializeTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<DeserializeTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnGetMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<ReceiveMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(Guard.AgainstNull(pipelineContext), $"working = {pipelineContext.Pipeline.State.GetWorking()} / has message = {pipelineContext.Pipeline.State.GetReceivedMessage() != null}");
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnHandleMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<HandleMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }

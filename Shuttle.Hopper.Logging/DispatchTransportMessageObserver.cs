@@ -5,39 +5,39 @@ namespace Shuttle.Hopper.Logging;
 
 public class DispatchTransportMessagePipelineObserver(ILogger<DispatchTransportMessagePipelineLogger> logger, IServiceBusLoggingConfiguration serviceBusLoggingConfiguration)
     : PipelineObserver<DispatchTransportMessagePipelineLogger>(logger, serviceBusLoggingConfiguration),
-        IPipelineObserver<OnFindRouteForMessage>,
-        IPipelineObserver<OnAfterFindRouteForMessage>,
-        IPipelineObserver<OnSerializeTransportMessage>,
-        IPipelineObserver<OnAfterSerializeTransportMessage>,
-        IPipelineObserver<OnDispatchTransportMessage>,
-        IPipelineObserver<OnAfterDispatchTransportMessage>
+        IPipelineObserver<FindMessageRoute>,
+        IPipelineObserver<MessageRouteFound>,
+        IPipelineObserver<SerializeTransportMessage>,
+        IPipelineObserver<TransportMessageSerialized>,
+        IPipelineObserver<DispatchTransportMessage>,
+        IPipelineObserver<TransportMessageDispatched>
 {
-    public async Task ExecuteAsync(IPipelineContext<OnFindRouteForMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<FindMessageRoute> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterFindRouteForMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<MessageRouteFound> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnSerializeTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<SerializeTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterSerializeTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<TransportMessageSerialized> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnDispatchTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<DispatchTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnAfterDispatchTransportMessage> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<TransportMessageDispatched> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }

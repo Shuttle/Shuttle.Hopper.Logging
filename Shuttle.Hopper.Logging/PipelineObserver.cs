@@ -7,25 +7,25 @@ namespace Shuttle.Hopper.Logging;
 
 public abstract class PipelineObserver<T>(ILogger<T> logger, IServiceBusLoggingConfiguration serviceBusLoggingConfiguration)
     :
-        IPipelineObserver<OnPipelineStarting>,
-        IPipelineObserver<OnPipelineException>,
-        IPipelineObserver<OnAbortPipeline>
+        IPipelineObserver<PipelineStarting>,
+        IPipelineObserver<PipelineException>,
+        IPipelineObserver<AbortPipeline>
 {
     private readonly Dictionary<Type, int> _eventCounts = new();
     private readonly ILogger<T> _logger = Guard.AgainstNull(logger);
     private readonly IServiceBusLoggingConfiguration _serviceBusLoggingConfiguration = Guard.AgainstNull(serviceBusLoggingConfiguration);
 
-    public async Task ExecuteAsync(IPipelineContext<OnAbortPipeline> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<AbortPipeline> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnPipelineStarting> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<PipelineStarting> pipelineContext, CancellationToken cancellationToken = default)
     {
         await TraceAsync(pipelineContext);
     }
 
-    public async Task ExecuteAsync(IPipelineContext<OnPipelineException> pipelineContext, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(IPipelineContext<PipelineException> pipelineContext, CancellationToken cancellationToken = default)
     {
         var type = pipelineContext.GetType();
 
