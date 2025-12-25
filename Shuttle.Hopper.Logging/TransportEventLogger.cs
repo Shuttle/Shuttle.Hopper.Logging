@@ -7,20 +7,13 @@ namespace Shuttle.Hopper.Logging;
 
 public class TransportEventLogger : IHostedService
 {
-    private readonly ServiceBusOptions _serviceBusOptions;
     private readonly ILogger<TransportEventLogger> _logger;
-    private readonly ServiceBusLoggingOptions _serviceBusLoggingOptions;
+    private readonly ServiceBusOptions _serviceBusOptions;
 
-    public TransportEventLogger(ILogger<TransportEventLogger> logger, IOptions<ServiceBusOptions> serviceBusOptions, IOptions<ServiceBusLoggingOptions> serviceBusLoggingOptions)
+    public TransportEventLogger(ILogger<TransportEventLogger> logger, IOptions<ServiceBusOptions> serviceBusOptions)
     {
         _serviceBusOptions = Guard.AgainstNull(Guard.AgainstNull(serviceBusOptions).Value);
-        _serviceBusLoggingOptions = Guard.AgainstNull(Guard.AgainstNull(serviceBusLoggingOptions).Value);
         _logger = Guard.AgainstNull(logger);
-
-        if (!_serviceBusLoggingOptions.QueueEvents)
-        {
-            return;
-        }
 
         _serviceBusOptions.TransportCreated += OnTransportCreated;
         _serviceBusOptions.TransportDisposing += OnTransportDisposing;
@@ -32,17 +25,29 @@ public class TransportEventLogger : IHostedService
         _serviceBusOptions.TransportOperation += OnTransportOperation;
     }
 
-    private Task OnTransportOperation(TransportOperationEventArgs eventArgs, CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogTrace("[{Scheme}.Operation] : transport name = '{TransportName}' / operation = '{Operation}' / managed thread id = {CurrentManagedThreadId}", eventArgs.Transport.Uri.Uri.Scheme, eventArgs.Transport.Uri.TransportName, eventArgs.Operation, Environment.CurrentManagedThreadId);
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _serviceBusOptions.TransportCreated -= OnTransportCreated;
+        _serviceBusOptions.TransportDisposing -= OnTransportDisposing;
+        _serviceBusOptions.TransportDisposed -= OnTransportDisposed;
+        _serviceBusOptions.MessageAcknowledged -= OnMessageAcknowledged;
+        _serviceBusOptions.MessageSent -= OnMessageSent;
+        _serviceBusOptions.MessageReceived -= OnMessageReceived;
+        _serviceBusOptions.MessageReleased -= OnMessageReleased;
+        _serviceBusOptions.TransportOperation -= OnTransportOperation;
 
         return Task.CompletedTask;
     }
 
-    private Task OnMessageReleased(MessageReleasedEventArgs eventArgs, CancellationToken cancellationToken)
+    private Task OnMessageAcknowledged(MessageAcknowledgedEventArgs eventArgs, CancellationToken cancellationToken)
     {
-        _logger.LogTrace("[{Scheme}.MessageReleased] : transport name = '{TransportName}' / managed thread id = {CurrentManagedThreadId}", eventArgs.Transport.Uri.Uri.Scheme, eventArgs.Transport.Uri.TransportName, Environment.CurrentManagedThreadId);
-        
+        _logger.LogTrace("[{Scheme}.MessageAcknowledged] : transport name = '{TransportName}' / managed thread id = {CurrentManagedThreadId}", eventArgs.Transport.Uri.Uri.Scheme, eventArgs.Transport.Uri.TransportName, Environment.CurrentManagedThreadId);
+
         return Task.CompletedTask;
     }
 
@@ -50,7 +55,14 @@ public class TransportEventLogger : IHostedService
     {
         _logger.LogTrace("[{Scheme}.MessageReceived] : transport name = '{TransportName}' / managed thread id = {CurrentManagedThreadId}", eventArgs.Transport.Uri.Uri.Scheme, eventArgs.Transport.Uri.TransportName, Environment.CurrentManagedThreadId);
 
-            return Task.CompletedTask;
+        return Task.CompletedTask;
+    }
+
+    private Task OnMessageReleased(MessageReleasedEventArgs eventArgs, CancellationToken cancellationToken)
+    {
+        _logger.LogTrace("[{Scheme}.MessageReleased] : transport name = '{TransportName}' / managed thread id = {CurrentManagedThreadId}", eventArgs.Transport.Uri.Uri.Scheme, eventArgs.Transport.Uri.TransportName, Environment.CurrentManagedThreadId);
+
+        return Task.CompletedTask;
     }
 
     private Task OnMessageSent(MessageSentEventArgs eventArgs, CancellationToken cancellationToken)
@@ -60,9 +72,9 @@ public class TransportEventLogger : IHostedService
         return Task.CompletedTask;
     }
 
-    private Task OnMessageAcknowledged(MessageAcknowledgedEventArgs eventArgs, CancellationToken cancellationToken)
+    private Task OnTransportCreated(TransportEventArgs eventArgs, CancellationToken cancellationToken)
     {
-        _logger.LogTrace("[{Scheme}.MessageAcknowledged] : transport name = '{TransportName}' / managed thread id = {CurrentManagedThreadId}", eventArgs.Transport.Uri.Uri.Scheme, eventArgs.Transport.Uri.TransportName, Environment.CurrentManagedThreadId);
+        _logger.LogTrace($"[OnTransportCreated] : uri = '{eventArgs.Transport.Uri}'");
 
         return Task.CompletedTask;
     }
@@ -81,32 +93,10 @@ public class TransportEventLogger : IHostedService
         return Task.CompletedTask;
     }
 
-    private Task OnTransportCreated(TransportEventArgs eventArgs, CancellationToken cancellationToken)
+    private Task OnTransportOperation(TransportOperationEventArgs eventArgs, CancellationToken cancellationToken)
     {
-        _logger.LogTrace($"[OnTransportCreated] : uri = '{eventArgs.Transport.Uri}'");
+        _logger.LogTrace("[{Scheme}.Operation] : transport name = '{TransportName}' / operation = '{Operation}' / managed thread id = {CurrentManagedThreadId}", eventArgs.Transport.Uri.Uri.Scheme, eventArgs.Transport.Uri.TransportName, eventArgs.Operation, Environment.CurrentManagedThreadId);
 
         return Task.CompletedTask;
-    }
-
-    public async Task StartAsync(CancellationToken cancellationToken)
-    {
-        await Task.CompletedTask;
-    }
-
-    public async Task StopAsync(CancellationToken cancellationToken)
-    {
-        if (_serviceBusLoggingOptions.QueueEvents)
-        {
-            _serviceBusOptions.TransportCreated -= OnTransportCreated;
-            _serviceBusOptions.TransportDisposing -= OnTransportDisposing;
-            _serviceBusOptions.TransportDisposed -= OnTransportDisposed;
-            _serviceBusOptions.MessageAcknowledged -= OnMessageAcknowledged;
-            _serviceBusOptions.MessageSent -= OnMessageSent;
-            _serviceBusOptions.MessageReceived -= OnMessageReceived;
-            _serviceBusOptions.MessageReleased -= OnMessageReleased;
-            _serviceBusOptions.TransportOperation -= OnTransportOperation;
-        }
-
-        await Task.CompletedTask;
     }
 }
