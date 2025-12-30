@@ -8,21 +8,21 @@ namespace Shuttle.Hopper.Logging;
 public class TransportEventLogger : IHostedService
 {
     private readonly ILogger<TransportEventLogger> _logger;
-    private readonly ServiceBusOptions _serviceBusOptions;
+    private readonly HopperOptions _hopperOptions;
 
-    public TransportEventLogger(ILogger<TransportEventLogger> logger, IOptions<ServiceBusOptions> serviceBusOptions)
+    public TransportEventLogger(ILogger<TransportEventLogger> logger, IOptions<HopperOptions> hopperOptions)
     {
-        _serviceBusOptions = Guard.AgainstNull(Guard.AgainstNull(serviceBusOptions).Value);
+        _hopperOptions = Guard.AgainstNull(Guard.AgainstNull(hopperOptions).Value);
         _logger = Guard.AgainstNull(logger);
 
-        _serviceBusOptions.TransportCreated += OnTransportCreated;
-        _serviceBusOptions.TransportDisposing += OnTransportDisposing;
-        _serviceBusOptions.TransportDisposed += OnTransportDisposed;
-        _serviceBusOptions.MessageAcknowledged += OnMessageAcknowledged;
-        _serviceBusOptions.MessageSent += OnMessageSent;
-        _serviceBusOptions.MessageReceived += OnMessageReceived;
-        _serviceBusOptions.MessageReleased += OnMessageReleased;
-        _serviceBusOptions.TransportOperation += OnTransportOperation;
+        _hopperOptions.TransportCreated += OnTransportCreated;
+        _hopperOptions.TransportDisposing += OnTransportDisposing;
+        _hopperOptions.TransportDisposed += OnTransportDisposed;
+        _hopperOptions.MessageAcknowledged += OnMessageAcknowledged;
+        _hopperOptions.MessageSent += OnMessageSent;
+        _hopperOptions.MessageReceived += OnMessageReceived;
+        _hopperOptions.MessageReleased += OnMessageReleased;
+        _hopperOptions.TransportOperation += OnTransportOperation;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -32,14 +32,14 @@ public class TransportEventLogger : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _serviceBusOptions.TransportCreated -= OnTransportCreated;
-        _serviceBusOptions.TransportDisposing -= OnTransportDisposing;
-        _serviceBusOptions.TransportDisposed -= OnTransportDisposed;
-        _serviceBusOptions.MessageAcknowledged -= OnMessageAcknowledged;
-        _serviceBusOptions.MessageSent -= OnMessageSent;
-        _serviceBusOptions.MessageReceived -= OnMessageReceived;
-        _serviceBusOptions.MessageReleased -= OnMessageReleased;
-        _serviceBusOptions.TransportOperation -= OnTransportOperation;
+        _hopperOptions.TransportCreated -= OnTransportCreated;
+        _hopperOptions.TransportDisposing -= OnTransportDisposing;
+        _hopperOptions.TransportDisposed -= OnTransportDisposed;
+        _hopperOptions.MessageAcknowledged -= OnMessageAcknowledged;
+        _hopperOptions.MessageSent -= OnMessageSent;
+        _hopperOptions.MessageReceived -= OnMessageReceived;
+        _hopperOptions.MessageReleased -= OnMessageReleased;
+        _hopperOptions.TransportOperation -= OnTransportOperation;
 
         return Task.CompletedTask;
     }
