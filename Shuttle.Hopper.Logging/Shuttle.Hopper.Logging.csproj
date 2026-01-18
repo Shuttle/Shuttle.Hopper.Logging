@@ -10,8 +10,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.1" />
-    <PackageReference Include="Shuttle.Core.Contract" Version="21.0.0" />
-    <PackageReference Include="Shuttle.Hopper" Version="21.0.0" />
+    <PackageReference Include="Shuttle.Core.Contract" Version="21.0.0-alpha" />
+    <PackageReference Include="Shuttle.Hopper" Version="21.0.0-alpha" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,7 +31,7 @@
 
   <PropertyGroup>
     <Description>Provides non-intrusive logging for Shuttle.Hopper components.</Description>
-    <Version>21.0.0</Version>
+    <Version>21.0.0-alpha</Version>
     <PackageProjectUrl>https://github.com/Shuttle/Shuttle.Hopper.Logging</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Shuttle/Shuttle.Hopper.Logging.git</RepositoryUrl>
     <PackageTags></PackageTags>

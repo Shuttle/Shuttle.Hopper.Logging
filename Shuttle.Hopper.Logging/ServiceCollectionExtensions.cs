@@ -6,7 +6,7 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddTransportEventLogging()
+        public IServiceCollection AddHopperLogging()
         {
             services.AddHostedService<TransportEventLogger>();
 

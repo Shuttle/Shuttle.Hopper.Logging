@@ -7,5 +7,5 @@ PM> Install-Package Shuttle.Hopper.Logging
 ## Configuration
 
 ```c#
-services.AddTransportEventLogging();
+services.AddHopperLogging();
 ```
